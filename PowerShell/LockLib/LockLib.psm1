@@ -41,3 +41,31 @@ function Read-Box {
 
     [Microsoft.VisualBasic.Interaction]::InputBox($Massege, $Title, $DefaultInput)
 }
+
+function Get-Size {
+    param([String]$Path=".", [Switch]$b, [Switch]$k, [Switch]$M, [Switch]$G, [Switch]$h)
+
+    $Files = Get-ChildItem -Path $Path -File -Recurse
+
+    if ($k) {
+        $Files | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1kB)) + "kB"};align="right"}
+    } elseif ($M) {
+        $Files | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1MB)) + "MB"};align="right"}
+    } elseif ($G) {
+        $Files | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1GB)) + "GB"};align="right"}
+    } elseif ($h) {
+        $Files | Format-Table Name, @{n="Size";e={
+            if ($_.Length -lt 1kB) {
+                $_.Length
+            } elseif ($_.Length -lt 1MB) {
+                ("{0:f3}" -f ($_.Length/1kB)) + "kB"
+            } elseif ($_.Length -lt 1GB) {
+                ("{0:f3}" -f ($_.Length/1MB)) + "MB"
+            } else {
+                ("{0:f3}" -f ($_.Length/1GB)) + "GB"
+            }
+        };align="right"}
+    } else {
+        $Files | Format-Table Name, @{n="Size";e={$_.Length};align="right"}
+    }
+}

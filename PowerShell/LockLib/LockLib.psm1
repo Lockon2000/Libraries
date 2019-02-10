@@ -1,11 +1,12 @@
 function ToArray {
     param($Arraylike)
 
-    [system.collections.arraylist]$a = @()
-    foreach ($b in $Arraylike){
-        [void]$a.add($b)
+    [system.collections.arraylist]$Array = @()
+    foreach ($Item in $Arraylike) {
+        [void]$Array.Add($Item)
     }
-    return $a
+
+    return $Array
 }
 
 
@@ -24,7 +25,6 @@ function Elevate-PSSession {
         Write-Output "You have already Admin Privileges"
     }
 }
-
 
 function Write-Color {
     param([String[]]$Text, [ConsoleColor[]]$Color)
@@ -73,3 +73,16 @@ function Get-Size {
         $Files | Format-Table Name, @{n="Size";e={$_.Length};align="right"}
     }
 }
+
+function Get-PublicIP {
+    param([Switch]$Full)
+
+    if (!$Full) {
+        Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
+    } else {
+        Invoke-RestMethod http://ipinfo.io/json
+    }
+}
+
+
+Export-ModuleMember -Function * -Alias * -Variable *

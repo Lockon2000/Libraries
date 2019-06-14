@@ -1,11 +1,12 @@
 function ToArray {
     param($Arraylike)
 
-    [system.collections.arraylist]$a = @()
-    foreach ($b in $Arraylike){
-        [void]$a.add($b)
+    [system.collections.arraylist]$Array = @()
+    foreach ($Item in $Arraylike) {
+        [void]$Array.Add($Item)
     }
-    return $a
+
+    return $Array
 }
 
 
@@ -25,7 +26,6 @@ function Elevate-PSSession {
     }
 }
 
-
 function Write-Color {
     param([String[]]$Text, [ConsoleColor[]]$Color)
 
@@ -43,9 +43,13 @@ function Read-Box {
 }
 
 function Get-Size {
-    param([String]$Path=".", [Switch]$b, [Switch]$k, [Switch]$M, [Switch]$G, [Switch]$h)
+    param([String]$Path=".", [Switch]$Recurse, [Switch]$b, [Switch]$k, [Switch]$M, [Switch]$G, [Switch]$h)
 
-    $Files = Get-ChildItem -Path $Path -File -Recurse
+    if ($Recurse) {
+        $Files = Get-ChildItem -Path $Path -File -Recurse
+    } else {
+        $Files = Get-ChildItem -Path $Path -File
+    }
 
     if ($k) {
         $Files | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1kB)) + "kB"};align="right"}
@@ -69,3 +73,16 @@ function Get-Size {
         $Files | Format-Table Name, @{n="Size";e={$_.Length};align="right"}
     }
 }
+
+function Get-PublicIP {
+    param([Switch]$Full)
+
+    if (!$Full) {
+        Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
+    } else {
+        Invoke-RestMethod http://ipinfo.io/json
+    }
+}
+
+
+Export-ModuleMember -Function * -Alias * -Variable *

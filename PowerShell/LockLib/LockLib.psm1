@@ -10,15 +10,15 @@ function ToArray {
 }
 
 
-function Elevate-PSSession {
-    param([switch]$Preserve)
+function Start-ElevatedPSSession {
+    param([switch]$PreserveCurrent)
 
     $CurrentlyAdmin = (New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
     
     if (-Not $CurrentlyAdmin)
     {
         Start-Process powershell.exe -Verb runAs -ArgumentList "-NoExit -Command cd '$PWD'"
-        if (-not $Preserve) {
+        if (-not $PreserveCurrent) {
             Exit
         }
     } else {

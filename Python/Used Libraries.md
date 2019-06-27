@@ -1,10 +1,12 @@
 # Package Management
+- pip
 - pipenv
 - importlib
 
 # Virtual Environments
 - venv
 - virtualenv
+- pipenv
 
 # OS Interaction
 - pathlib
@@ -19,8 +21,12 @@
 - json
 - marshal
 
-# Internet Interaction
+# Web Requests
 - requests
+
+# Web Scraping
+- beautiful soup
 
 # Mathematics
 - math
+- numpy

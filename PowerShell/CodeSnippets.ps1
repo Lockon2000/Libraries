@@ -1,3 +1,11 @@
+# Directory of current script
+$PSScriptRoot
+# or
+$PSScriptDir = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)"
+# Directory of caller script
+$PSScriptDir = "$(Split-Path -Parent $MyInvocation.PSScriptRoot)"
+
+
 # Creating a HKCR Registry drive
 New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
 

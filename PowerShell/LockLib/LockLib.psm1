@@ -45,20 +45,37 @@ function Read-Box {
 function Get-Size {
     param([String]$Path=".", [Switch]$Recurse, [Switch]$b, [Switch]$k, [Switch]$M, [Switch]$G, [Switch]$h)
 
+    $Path = (Resolve-Path $Path).ToString().trim('\')
+    # If ($Path[-1] -eq "\") {
+    #     $Path = 
+    # }
+
     if ($Recurse) {
-        $Files = Get-ChildItem -Path $Path -File -Recurse
+        $Items = Get-ChildItem -Path $Path -Force -Recurse
     } else {
-        $Files = Get-ChildItem -Path $Path -File
+        $Items = Get-ChildItem -Path $Path -Force
     }
 
+    $Total = 0
+    ForEach ($Item in $Items) {
+        If ($Item.PSIsContainer) {
+            $Item | Add-Member -NotePropertyName Length -NotePropertyValue (Get-DirectorySize $Item.PSPath)
+        }
+
+        If ((Split-Path $Item.FullName) -eq $Path) {
+            $Total += $Item.Length
+        }
+    }
+
+
     if ($k) {
-        $Files | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1kB)) + "kB"};align="right"}
+        $Items | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1kB)) + "kB"};align="right"}
     } elseif ($M) {
-        $Files | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1MB)) + "MB"};align="right"}
+        $Items | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1MB)) + "MB"};align="right"}
     } elseif ($G) {
-        $Files | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1GB)) + "GB"};align="right"}
+        $Items | Format-Table Name, @{n="Size";e={("{0:f3}" -f ($_.Length/1GB)) + "GB"};align="right"}
     } elseif ($h) {
-        $Files | Format-Table Name, @{n="Size";e={
+        $Items | Format-Table Name, @{n="Size";e={
             if ($_.Length -lt 1kB) {
                 $_.Length
             } elseif ($_.Length -lt 1MB) {
@@ -70,8 +87,37 @@ function Get-Size {
             }
         };align="right"}
     } else {
-        $Files | Format-Table Name, @{n="Size";e={$_.Length};align="right"}
+        $Items | Format-Table Name, @{n="Size";e={$_.Length};align="right"}
     }
+
+    [pscustomobject]@{Name="Total";Length=$Total} | Format-Table Name, @{n="Size";e={
+            if ($_.Length -lt 1kB) {
+                $_.Length
+            } elseif ($_.Length -lt 1MB) {
+                ("{0:f3}" -f ($_.Length/1kB)) + "kB"
+            } elseif ($_.Length -lt 1GB) {
+                ("{0:f3}" -f ($_.Length/1MB)) + "MB"
+            } else {
+                ("{0:f3}" -f ($_.Length/1GB)) + "GB"
+            }
+        };align="right"}
+}
+
+function Get-DirectorySize {
+    param([String]$Path=".")
+
+    $Contents = Get-ChildItem -Path $Path
+
+    $Sum = 0
+    ForEach ($Item in $Contents) {
+        If ($Item.PSIsContainer) {
+            $Sum += Get-DirectorySize $Item.PSPath
+        } Else {
+            $Sum += $Item.Length
+        }
+    }
+
+    Return $Sum
 }
 
 function Get-PublicIP {

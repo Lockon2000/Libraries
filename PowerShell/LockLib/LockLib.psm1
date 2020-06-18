@@ -17,7 +17,10 @@ function Start-ElevatedPSSession {
     
     if (-Not $CurrentlyAdmin)
     {
-        Start-Process powershell.exe -Verb runAs -ArgumentList "-NoExit -Command cd '$PWD'"
+        # Get the path to the currently running PowerShell version
+        $Path = (Get-Process -id $PID | Get-Item | Select -ExpandProperty Fullname)
+
+        Start-Process $Path -Verb runAs -ArgumentList "-NoExit -Command cd '$PWD'"
         if (-not $PreserveCurrent) {
             Exit
         }

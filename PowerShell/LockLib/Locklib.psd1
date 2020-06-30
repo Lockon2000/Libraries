@@ -69,7 +69,16 @@ Copyright = '(c) 2019 Lockon2000. Alle Rechte vorbehalten.'
 # NestedModules = @()
 
 # Aus diesem Modul zu exportierende Funktionen. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Funktionen vorhanden sind.
-FunctionsToExport = '*'
+FunctionsToExport = @(
+    "ToArray",
+    "Start-ElevatedSession",
+    "Write-Color",
+    "Read-Box",
+    "Get-Size",
+    "Get-DirectorySize",
+    "Get-PublicIP",
+    "Update-AllGitSubdirs"
+)
 
 # Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
 CmdletsToExport = @()
@@ -78,7 +87,7 @@ CmdletsToExport = @()
 VariablesToExport = @()
 
 # Aus diesem Modul zu exportierende Aliase. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Aliase vorhanden sind.
-AliasesToExport = @()
+AliasesToExport = @("ags")
 
 # Aus diesem Modul zu exportierende DSC-Ressourcen
 # DscResourcesToExport = @()

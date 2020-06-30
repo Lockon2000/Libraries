@@ -10,24 +10,15 @@ function ToArray {
 }
 
 
-function Start-ElevatedPSSession {
+function Start-ElevatedSession {
     param([switch]$PreserveCurrent)
 
-    $CurrentlyAdmin = (New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-    
-    if (-Not $CurrentlyAdmin)
-    {
-        # Get the path to the currently running PowerShell version
-        $Path = (Get-Process -id $PID | Get-Item | Select -ExpandProperty Fullname)
-
-        Start-Process $Path -Verb runAs -ArgumentList "-NoExit -Command cd '$PWD'"
-        if (-not $PreserveCurrent) {
-            Exit
-        }
-    } else {
-        Write-Output "You have already Admin Privileges"
+    Start-Process pwsh.exe -Verb runAs -ArgumentList "-NoExit -Command cd '$PWD'"
+    if (-not $PreserveCurrent) {
+        Exit
     }
 }
+
 
 function Write-Color {
     param([String[]]$Text, [ConsoleColor[]]$Color)
@@ -37,6 +28,7 @@ function Write-Color {
     }
 }
 
+
 function Read-Box {
     param([String]$Massege, [String]$Title, [String]$DefaultInput)
 
@@ -44,6 +36,7 @@ function Read-Box {
 
     [Microsoft.VisualBasic.Interaction]::InputBox($Massege, $Title, $DefaultInput)
 }
+
 
 function Get-Size {
     param([String]$Path=".", [Switch]$Recurse, [Switch]$b, [Switch]$k, [Switch]$M, [Switch]$G, [Switch]$h)
@@ -106,6 +99,7 @@ function Get-Size {
         };align="right"}
 }
 
+
 function Get-DirectorySize {
     param([String]$Path=".")
 
@@ -123,6 +117,7 @@ function Get-DirectorySize {
     Return $Sum
 }
 
+
 function Get-PublicIP {
     param([Switch]$Full)
 
@@ -132,6 +127,24 @@ function Get-PublicIP {
         Invoke-RestMethod http://ipinfo.io/json
     }
 }
+
+
+function Update-AllGitSubdirs {
+    dir | %{
+        if (Test-Path $PSItem -PathType Container) {
+            cd $PSItem.FullName
+            if (Test-Path .git) {
+                echo "------------ $($PSItem.BaseName) ------------"
+                git remote update
+                git st
+            }
+        }
+    }
+
+    cd ..
+}
+
+New-Alias -Name ags -Value Update-AllGitSubdirs
 
 
 Export-ModuleMember -Function * -Alias * -Variable *

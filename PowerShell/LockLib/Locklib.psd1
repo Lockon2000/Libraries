@@ -77,7 +77,8 @@ FunctionsToExport = @(
     "Get-Size",
     "Get-DirectorySize",
     "Get-PublicIP",
-    "Update-AllGitSubdirs"
+    "Get-AllGitSubdirsStatus",
+    "Sync-AllGitSubdirs"
 )
 
 # Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
@@ -87,7 +88,7 @@ CmdletsToExport = @()
 VariablesToExport = @()
 
 # Aus diesem Modul zu exportierende Aliase. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Aliase vorhanden sind.
-AliasesToExport = @("ags")
+AliasesToExport = @("gag", "sag")
 
 # Aus diesem Modul zu exportierende DSC-Ressourcen
 # DscResourcesToExport = @()

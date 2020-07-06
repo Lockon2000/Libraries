@@ -129,7 +129,7 @@ function Get-PublicIP {
 }
 
 
-function Update-AllGitSubdirs {
+function Get-AllGitSubdirsStatus {
     dir | %{
         if (Test-Path $PSItem -PathType Container) {
             cd $PSItem.FullName
@@ -144,7 +144,24 @@ function Update-AllGitSubdirs {
     cd ..
 }
 
-New-Alias -Name ags -Value Update-AllGitSubdirs
+New-Alias -Name gag -Value Get-AllGitSubdirsStatus
+
+function Sync-AllGitSubdirs {
+    dir | %{
+        if (Test-Path $PSItem -PathType Container) {
+            cd $PSItem.FullName
+            if (Test-Path .git) {
+                echo "------------ $($PSItem.BaseName) ------------"
+                git pull
+                git st
+            }
+        }
+    }
+
+    cd ..
+}
+
+New-Alias -Name sag -Value Sync-AllGitSubdirs
 
 
 Export-ModuleMember -Function * -Alias * -Variable *

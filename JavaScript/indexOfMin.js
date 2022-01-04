@@ -3,9 +3,9 @@ function indexOfMin(arr) {
         return -1;
     }
 
-    var minIndex = 0;
+    let minIndex = 0;
 
-    for (var i = 1; i < arr.length; i++) {
+    for (let i = 1 in arr) {
         if (arr[i] < arr[minIndex]) {
             minIndex = i;
         }
